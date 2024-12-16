@@ -1,0 +1,30 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+project(YOLOv8CPP)
+
+if(NOT PROJECT_DEPS_DIR)
+  set(PROJECT_DEPS_DIR /home/pi/work/opencv/install)
+endif()
+
+FIND_PACKAGE(OpenCV REQUIRED)
+
+SET(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(ONNXRUNTIME_LIB ${PROJECT_DEPS_DIR}/onnxruntime/lib/libonnxruntime.so)
+SET(ONNXRUNTIME_INCLUDE ${PROJECT_DEPS_DIR}/onnxruntime/include)
+
+# --- Configure your project files ---
+INCLUDE_DIRECTORIES(include)  # Include your header files directory
+
+# Recursively collect all source files under 'src' directory
+FILE(GLOB_RECURSE CURR_SOURCES src/*.cpp)
+
+# Create the executable
+ADD_LIBRARY(inference SHARED ${CURR_SOURCES})
+ADD_EXECUTABLE(YOLOv8CPP src/main.cpp)
+
+TARGET_INCLUDE_DIRECTORIES(inference PRIVATE ${ONNXRUNTIME_INCLUDE})
+TARGET_INCLUDE_DIRECTORIES(YOLOv8CPP PRIVATE ${ONNXRUNTIME_INCLUDE})
+TARGET_LINK_LIBRARIES(inference ${OpenCV_LIBS})
+TARGET_LINK_LIBRARIES(inference ${ONNXRUNTIME_LIB})
+
+TARGET_LINK_LIBRARIES(YOLOv8CPP inference)
