@@ -13,6 +13,12 @@
  * This structure stores information about a detected object, including its class index,
  * confidence score, bounding box, semantic segmentation mask, and keypoints (if available).
  */
+struct InferenceTimer {
+    double preprocess_time;
+    double inference_time;
+    double postprocess_time;
+};
+
 struct YoloResults {
     int class_idx{};                  ///< The class index of the detected object.
     float conf{};                     ///< The confidence score of the detection.
@@ -28,12 +34,14 @@ struct ImageInfo {
 
 class AutoBackendOnnx : public OnnxModelBase {
 public:
+    InferenceTimer timer;
+
     // constructors
     AutoBackendOnnx(const char* modelPath, const char* logid, const char* provider,
         const std::vector<int>& imgsz, const int& stride,
         const int& nc, std::unordered_map<int, std::string> names);
 
-    AutoBackendOnnx(const char* modelPath, const char* logid, const char* provider);
+    AutoBackendOnnx(const char* modelPath, const char* logid, const char* provider, int num_threads);
 
     // getters
     virtual const std::vector<int>& getImgsz();

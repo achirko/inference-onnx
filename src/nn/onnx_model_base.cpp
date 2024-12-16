@@ -22,7 +22,7 @@
  * @param[in] provider Provider (e.g., "CPU" or "CUDA"). (NOTE: for now only CPU is supported)
  */
 
-OnnxModelBase::OnnxModelBase(const char* modelPath, const char* logid, const char* provider)
+OnnxModelBase::OnnxModelBase(const char* modelPath, const char* logid, const char* provider, int num_threads)
 //: modelPath_(modelPath), env(std::move(env)), session(std::move(session))
     : modelPath_(modelPath)
 {
@@ -46,7 +46,6 @@ OnnxModelBase::OnnxModelBase(const char* modelPath, const char* logid, const cha
             sessionOptions.AppendExecutionProvider_CUDA(cudaOption);
         }
     }
-
     else if (provider == OnnxProviders::CPU.c_str()) {  // strcmp(provider, OnnxProviders::CPU.c_str()) == true) (providerStr == "cpu") {
         // "cpu" by default
     }
@@ -54,6 +53,9 @@ OnnxModelBase::OnnxModelBase(const char* modelPath, const char* logid, const cha
     {
         throw std::runtime_error("NotImplemented provider=" + std::string(provider));
     }
+
+    sessionOptions.SetInterOpNumThreads(num_threads);
+    sessionOptions.SetIntraOpNumThreads(num_threads);
 
     std::cout << "Inference device: " << std::string(provider) << std::endl;
     #ifdef _WIN32
