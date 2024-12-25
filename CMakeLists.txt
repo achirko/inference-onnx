@@ -2,15 +2,15 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 project(YOLOv8CPP)
 
 if(NOT PROJECT_DEPS_DIR)
-  set(PROJECT_DEPS_DIR /home/pi/work/opencv/install)
+  set(PROJECT_DEPS_DIR /home/pi/work/odec/project_deps/install)
 endif()
 
-FIND_PACKAGE(OpenCV REQUIRED)
+FIND_PACKAGE(OpenCV 4.10.0 REQUIRED PATHS ${PROJECT_DEPS_DIR}/lib/cmake)
 
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
-SET(ONNXRUNTIME_LIB ${PROJECT_DEPS_DIR}/onnxruntime/lib/libonnxruntime.so)
-SET(ONNXRUNTIME_INCLUDE ${PROJECT_DEPS_DIR}/onnxruntime/include)
+SET(ONNXRUNTIME_LIB ${PROJECT_DEPS_DIR}/lib/libonnxruntime.so)
+SET(ONNXRUNTIME_INCLUDE ${PROJECT_DEPS_DIR}/include)
 
 # --- Configure your project files ---
 INCLUDE_DIRECTORIES(include)  # Include your header files directory
